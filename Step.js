@@ -1,4 +1,4 @@
-/* 
+/*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
@@ -12,26 +12,26 @@ class Step {
         buttonStateControl.DisableStep();
 
         if (Model.stepResultsUpdateMatrixAndDisplay.length > 0) {
-            const displayData = new DisplayData(Model);
+            const displayData = createDisplayData(Model);
             displayData.UpdateMatrixAndDisplay(Model.stepResultsUpdateMatrixAndDisplay.shift());
             buttonStateControl.EnableStep();
         }
         if (Model.stepResultsUpdateDisplayOnly.length > 0) {
-            const displayData = new DisplayData(Model);
+            const displayData = createDisplayData(Model);
             displayData.UpdateDisplayOnly(Model.stepResultsUpdateDisplayOnly.shift());
 
             return;
         }
-        const display = new Display(Model);
-        const currentValues = display.CurrentValues();
-        const currentPencilMarks = display.CurrentPencilMarks();
+        const display = createDisplay(Model);
+        const currentValues = display.currentValues();
+        const currentPencilMarks = display.currentPencilMarks();
 
         let command = "jsp/solver/Step.jsp";
         command += "?puzzle=" + currentValues;
         command += "&pencilMarks=" + currentPencilMarks;
         command += "&rowsPerArea=" + Model.numberOfRowsPerArea;
 
-        // Send AJAX Request    
+        // Send AJAX Request
         $.ajax({
             url: command,
             dataType: 'html',
@@ -44,7 +44,7 @@ class Step {
                 const data = xmlDoc.getElementsByTagName("ALGORITHM_UPDATE_DISPLAY_ONLY");
                 Model.stepResultsUpdateDisplayOnly = [].slice.call(data);
 
-                const displayData = new DisplayData(Model);
+                const displayData = createDisplayData(Model);
                 Model.stepResultsUpdateDisplayOnly0 = Model.stepResultsUpdateDisplayOnly.shift();
                 displayData.UpdateDisplayOnly(Model.stepResultsUpdateDisplayOnly0);
 

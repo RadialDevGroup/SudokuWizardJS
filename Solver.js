@@ -1,4 +1,4 @@
-/* 
+/*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
@@ -22,16 +22,16 @@ class Solver {
                         createDisplay.CreateDisplay();
 
                         if (!Model.displayIsCleared) {
-                            const display = new Display(Model);
-                            display.RestoreCurrentValues();
-                            display.RestorePencilMarks();
+                            const display = createDisplay(Model);
+                            display.restorecurrentValues();
+                            display.restorePencilMarks();
                         }
 
                         const docElement = $("#docs")[0];
                         docElement.value = Model.currentDocs;
 
                         if (Model.stepResultsUpdateDisplayOnly0 !== "") {
-                            const displayData = new DisplayData(Model);
+                            const displayData = createDisplayData(Model);
                             displayData.UpdateDisplayOnly(Model.stepResultsUpdateDisplayOnly0);
                         }
                         const buttonStateControl = new ButtonStateControl(Model);
@@ -67,12 +67,12 @@ class Solver {
         };
         this.LoadPuzzle = (puzzleName) => {
             if (puzzleName === "") { return; }
-            
+
             const selectedFileName = "sdk/" + puzzleName + ".sdk";
             $.ajax({
                 url: selectedFileName,
                 async: false,
-                success: function(data){ 
+                success: function(data){
                     SudokuWizard.Clear();
                     const selectedFile = new File([data], selectedFileName);
                     var handleFileSelect = new HandleFileSelect(Model);

@@ -1,4 +1,4 @@
-/* 
+/*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
@@ -16,13 +16,13 @@ class HandleFileSelect {
         let pencilMarksRead;
         let initialPencilMarks;
         let lineCounter;
-        
+
         let badPuzzleSizeData;
         let badPuzzleData;
         let badPencilMarkData;
-        
+
         const constants = new Constants(Model);
-        
+
         this.LoadFile = (selectedFile) =>{
             const reader = new FileReader();
             reader.onload = (event) => {
@@ -152,7 +152,7 @@ class HandleFileSelect {
                 return results;
             }
             results = ValidAreas();
-            
+
             return results;
         };
         const ReadPencilMarks = (lines) => {
@@ -177,7 +177,7 @@ class HandleFileSelect {
                 }
                 initialPencilMarks[row] = initialPencilMarksRow;
             }
-        };    
+        };
         const ValidPencilMarks = () => {
             let results;
             if (initialPencilMarks.length === 0) {return true;}
@@ -186,7 +186,7 @@ class HandleFileSelect {
 
             results = ValidPencilMarkColumns();
             if (!results) { return results;}
-            
+
             results = ValidPencilMarkAreas();
             return results;
         };
@@ -204,7 +204,7 @@ class HandleFileSelect {
                 candidateBackground.CreateCandidateBackgroundColors();
             } else {
                 if  (Model.stepResultsUpdateMatrixAndDisplay.length > 0) {
-                    const displayData = new DisplayData(Model);
+                    const displayData = createDisplayData(Model);
                     displayData.ClearDisplay(Model.stepResultsUpdateMatrixAndDisplay.shift(0));
                 }
                 const dataArrays = new DataArrays(Model);
@@ -213,8 +213,8 @@ class HandleFileSelect {
                 const canvas = new Canvas(Model);
                 canvas.ClearCanvas();
             }
-            const display = new Display(Model);
-            display.ClearDocs();
+            const display = createDisplay(Model);
+            display.clearDocs();
             const buttonStateControl = new ButtonStateControl(Model);
             buttonStateControl.DisableKeyPad();
             buttonStateControl.DisableAddPencilMarks();
@@ -239,7 +239,7 @@ class HandleFileSelect {
             Model.currentDocs = docElement.value;
         };
         const  ValidNumberOfClues = () => {
-            if ((isNaN(numberOfClues)) || 
+            if ((isNaN(numberOfClues)) ||
                 (numberOfClues < 1)) {
                 const message = "The number of clues (#H) must be a positive integer.";
                 FileReadMessage(message);
@@ -248,7 +248,7 @@ class HandleFileSelect {
             return true;
         };
         const  ValidNumberOfOfRowsPerArea = () => {
-            if ((isNaN(numberOfRowsPerArea)) || 
+            if ((isNaN(numberOfRowsPerArea)) ||
                 (numberOfRowsPerArea < 1)) {
                 const message = "The number of rows per area (#R) must be a positive integer.";
                 FileReadMessage(message);
@@ -257,7 +257,7 @@ class HandleFileSelect {
             return true;
         };
         const  ValidPuzzleLine = (line, numberOfClues, row) => {
-            if ((line === undefined) || 
+            if ((line === undefined) ||
                 (line.charAt(0) === "[") ||
                 (line.charAt(0) === "#")) {
                 const message = "Insufficient number of puzzle rows";
@@ -279,7 +279,7 @@ class HandleFileSelect {
             return true;
         };
         const  ValidPuzzleData = (row, column, value) => {
-            if ((value !== ".") && 
+            if ((value !== ".") &&
                 (constants.PositionForSymbolNumberOfSymbols(value, numberOfClues)=== -1)) {
                 const rowValue = parseInt(row) + 1;
                 const columnValue = parseInt(column) + 1;
@@ -289,7 +289,7 @@ class HandleFileSelect {
             }
             return true;
         };
-        
+
         const  ValidRows = () => {
             for (let row = 0; row < initialValues.length; row++) {
                 let rowValues = new Set();
@@ -353,7 +353,7 @@ class HandleFileSelect {
             return true;
         };
         const  ValidPencilMarksLine = (line, rowValues, row) => {
-            if ((line === undefined) || 
+            if ((line === undefined) ||
                 (line.charAt(0) === "[") ||
                 (line.charAt(0) === "#")) {
                 const message = "Insufficient number of rows of pencil marks";
@@ -379,7 +379,7 @@ class HandleFileSelect {
             if (values.length > 0 && initialValues[row][column] !== ".") {
                 const rowValue = parseInt(row) + 1;
                 const columnValue = parseInt(column) + 1;
-                const message = "Puzzle and Pencil Marks values at the same row and column (" + 
+                const message = "Puzzle and Pencil Marks values at the same row and column (" +
                         rowValue + ", " + columnValue + ") are not allowed.";
                 FileReadMessage(message);
                 return false;
@@ -389,7 +389,7 @@ class HandleFileSelect {
                 if (constants.PositionForSymbolNumberOfSymbols(value, numberOfClues) === -1) {
                     const rowValue = parseInt(row) + 1;
                     const columnValue = parseInt(column) + 1;
-                    const message = "Invalid pencil mark " + value + " in row " + rowValue + ", column " + columnValue; 
+                    const message = "Invalid pencil mark " + value + " in row " + rowValue + ", column " + columnValue;
                     FileReadMessage(message);
                     return false;
                 }
@@ -495,7 +495,7 @@ class HandleFileSelect {
             $('#displaySizeSelect option:contains(' + val + ')').prop({selected: true});
         };
         const  UpdateModelAndDisplay = () =>{
-            const display = new Display(Model);
+            const display = createDisplay(Model);
             for (let row = 0; row < Model.numberOfClues; row++) {
                 for (let column = 0; column < Model.numberOfClues; column++) {
                     const value = initialValues[row][column];
@@ -506,20 +506,20 @@ class HandleFileSelect {
                         finalValue.style.color = Model.initialValueColor;
                         Model.initialValues[row][column] = value;
                         Model.currentValues[row][column] = value;
-                        display.TurnOffCandidateTable(row, column);
-                        display.TurnOnFinalValue(row, column);
+                        display.turnOffCandidateTable(row, column);
+                        display.turnOnFinalValue(row, column);
                     } else {
                         finalValue.innerHTML = "";
                         Model.initialValues[row][column] = "";
                         Model.currentValues[row][column] = "";
-                        display.TurnOnCandidateTable(row, column);
-                        display.TurnOffFinalValue(row, column);
+                        display.turnOnCandidateTable(row, column);
+                        display.turnOffFinalValue(row, column);
                     }
                 }
             }
         };
         const UpdateModelAndDisplayPencilMarks = () => {
-            const display = new Display(Model);
+            const display = createDisplay(Model);
             for (let row = 0; row < Model.numberOfClues; row++) {
                 for (let column = 0; column < Model.numberOfClues; column++) {
                     const values = initialPencilMarks[row][column];
@@ -528,19 +528,19 @@ class HandleFileSelect {
                     if (values.length === 0) {
                         for (let value = 0; value < Model.numberOfClues; value++) {
                             const hash = constants.Hash(row, column, value);
-                            display.HideCandidate(hash);
+                            display.hideCandidate(hash);
                         }
                         continue;
                     }
-                    display.TurnOffFinalValue(row, column);
-                    display.TurnOnCandidateTable(row, column);
+                    display.turnOffFinalValue(row, column);
+                    display.turnOnCandidateTable(row, column);
 
                     for (let value = 0; value < Model.numberOfClues; value++) {
                         const hash = constants.Hash(row, column, value);
                         if (values.indexOf(constants.SymbolAtPosition(value)) !== -1) {
-                            display.ShowCandidate(hash);
+                            display.showCandidate(hash);
                         } else {
-                            display.HideCandidate(hash);
+                            display.hideCandidate(hash);
                         }
                     }
                 }

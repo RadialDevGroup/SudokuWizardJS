@@ -1,4 +1,4 @@
-/* 
+/*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
@@ -13,7 +13,7 @@ class DisplayData {
         this.UpdateMatrixAndDisplay = function (Displaydata){
             displaydata = Displaydata;
             this.ClearDisplay(displaydata);
-            TurnOnFinalValues();
+            turnOnFinalValues();
         };
         this.UpdateDisplayOnly = function(Displaydata){
             displaydata = Displaydata;
@@ -217,7 +217,7 @@ class DisplayData {
             const finalValues = displaydata.getElementsByTagName("CandidatesToTurnOnOrOff");
             if (finalValues.length === 0) {return;}
             const candidates = finalValues[0].getElementsByTagName("CandidateID");
-            const display = new Display(Model);
+            const display = createDisplay(Model);
             for (let i = 0; i < candidates.length; i++) {
                 const turnOffCandidate = candidates[i];
                 const hash = turnOffCandidate.childNodes[0].nodeValue;
@@ -226,10 +226,10 @@ class DisplayData {
                 const value = constants.ValueFromHash(hash);
 
                 const symbol = constants.SymbolAtPosition(value);
-                const newPencilMark = display.RemovePencilMarkString(row, column, symbol);
+                const newPencilMark = display.removePencilMarkString(row, column, symbol);
                 Model.currentPencilMarks[row][column] = newPencilMark;
 
-                display.HideCandidate(hash);
+                display.hideCandidate(hash);
 
                 const candidateID = "#candidate" + hash;
                 const candidateToHighlight = $(candidateID)[0];
@@ -239,11 +239,11 @@ class DisplayData {
             }
         };
 
-        const TurnOnFinalValues = () => {
+        const turnOnFinalValues = () => {
             const finalValues = displaydata.getElementsByTagName("FinalValues");
             if (finalValues.length === 0) {return;}
             const candidates = finalValues[0].getElementsByTagName("CandidateID");
-            const display = new Display(Model);
+            const display = createDisplay(Model);
             for (let i = 0; i < candidates.length; i++) {
                 const finalCandidate = candidates[i];
                 const hash = finalCandidate.childNodes[0].nodeValue;
@@ -252,12 +252,12 @@ class DisplayData {
                 const value = constants.ValueFromHash(hash);
 
                 const symbol = constants.SymbolAtPosition(value);
-                const newPencilMark = display.RemovePencilMarkString(row, column, symbol);
+                const newPencilMark = display.removePencilMarkString(row, column, symbol);
                 Model.currentPencilMarks[row][column] = newPencilMark;
 
                 Model.currentValues[row][column] = symbol;
-                display.TurnOffCandidateTable(row, column);
-                display.TurnOnFinalValue(row, column);
+                display.turnOffCandidateTable(row, column);
+                display.turnOnFinalValue(row, column);
 
                 const finalValueID = "#finalValuerow" + row + "column" + column;
                 const finalValue = $(finalValueID)[0];
@@ -330,47 +330,47 @@ class DisplayData {
             }
         };
         const TurnOffCandidatesInThisRow = (row, column, value) => {
-            const display = new Display(Model);
+            const display = createDisplay(Model);
             for (let candidateColumn = 0; candidateColumn < Model.numberOfClues; candidateColumn++) {
                 if (column === candidateColumn) {
                     continue;
                 }
                 const candidateValue = constants.PositionForSymbol(value);
                 const hash = constants.Hash(row, candidateColumn, candidateValue);
-                display.HideCandidate(hash);
-                const newPencilMark = display.RemovePencilMarkString(row, candidateColumn, value);
+                display.hideCandidate(hash);
+                const newPencilMark = display.removePencilMarkString(row, candidateColumn, value);
                 Model.initialPencilMarks[row][candidateColumn] = newPencilMark;
                 Model.currentPencilMarks[row][candidateColumn] = newPencilMark;
             }
         };
         const TurnOffCandidatesInThisColumn = (row, column, value) => {
-            const display = new Display(Model);
+            const display = createDisplay(Model);
             for (let candidateRow = 0; candidateRow < Model.numberOfClues; candidateRow++) {
                 let candidateValue = constants.PositionForSymbol(value);
                 let hash = constants.Hash(candidateRow, column, candidateValue);
                 const candidateTableID = "#candidateTablerow" + candidateRow + "column" + column;
                 const candidateTable = $(candidateTableID)[0];
                 if (candidateTable.style.visibility === "visible") {
-                    display.ShowCandidate(hash);
+                    display.showCandidate(hash);
                 }
                 if (row === candidateRow) {
                     continue;
                 }
                 candidateValue = constants.PositionForSymbol(value);
                 hash = constants.Hash(candidateRow, column, candidateValue);
-                display.HideCandidate(hash);
-                const newPencilMark = display.RemovePencilMarkString(candidateRow, column, value);
+                display.hideCandidate(hash);
+                const newPencilMark = display.removePencilMarkString(candidateRow, column, value);
                 Model.initialPencilMarks[candidateRow][column] = newPencilMark;
                 Model.currentPencilMarks[candidateRow][column] = newPencilMark;
             }
         };
         const TurnOffCandidatesInThisCell = (row, column) => {
-            const display = new Display(Model);
+            const display = createDisplay(Model);
             for (let candidateValue = 0; candidateValue < Model.numberOfClues; candidateValue++) {
                 const hash = constants.Hash(row, column, candidateValue);
-                display.HideCandidate(hash);
+                display.hideCandidate(hash);
                 const candidateSymbol = constants.SymbolAtPosition(candidateValue);
-                const newPencilMark = display.RemovePencilMarkString(row, column, candidateSymbol);
+                const newPencilMark = display.removePencilMarkString(row, column, candidateSymbol);
                 Model.initialPencilMarks[row][column] = newPencilMark;
                 Model.currentPencilMarks[row][column] = newPencilMark;
             }
@@ -379,7 +379,7 @@ class DisplayData {
             const area = constants.AreaForRowAndColumn(row, column);
             const index = constants.IndexForRowAndColumn(row, column);
             const candidateValue = constants.PositionForSymbol(value);
-            const display = new Display(Model);
+            const display = createDisplay(Model);
             for (let candidateIndex = 0; candidateIndex < Model.numberOfClues; candidateIndex++) {
                 if (index === candidateIndex) {
                     continue;
@@ -387,14 +387,14 @@ class DisplayData {
                 const candidateRow = constants.RowForAreaAndIndex(area, candidateIndex);
                 const candidateColumn = constants.ColumnForAreaAndIndex(area, candidateIndex);
                 const hash = constants.Hash(candidateRow, candidateColumn, candidateValue);
-                display.HideCandidate(hash);
-                const newPencilMark = display.RemovePencilMarkString(candidateRow, candidateColumn, value);
+                display.hideCandidate(hash);
+                const newPencilMark = display.removePencilMarkString(candidateRow, candidateColumn, value);
                 Model.initialPencilMarks[candidateRow][candidateColumn] = newPencilMark;
                 Model.currentPencilMarks[candidateRow][candidateColumn] = newPencilMark;
             }
         };
         const highlightColor =  "green";
-        const TFBackgroundColor = [ 
+        const TFBackgroundColor = [
             "rgb(200,208,255)",//alice blue darker
             "rgb( 30,144,255)",//dodger blue
     //         "rgb( 32,178,170)",//light sea green

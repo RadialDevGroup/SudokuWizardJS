@@ -1,4 +1,4 @@
-/* 
+/*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
@@ -34,12 +34,12 @@ class SetValuesOnDisplay {
             const column = Math.floor((Model.numberOfClues * x) / canvasWidth);
             const finalValueID = "#finalValuerow" + row + "column" + column;
             const finalValue = $(finalValueID)[0];
-            const display = new Display(Model);
+            const display = createDisplay(Model);
             if (Model.prevKeypadId !== "keypadBlank") {
-                display.TurnOffCandidateTable(row, column);
-                display.TurnOnFinalValue(row, column);
+                display.turnOffCandidateTable(row, column);
+                display.turnOnFinalValue(row, column);
             } else {
-                display.TurnOffFinalValue(row, column);
+                display.turnOffFinalValue(row, column);
             }
             finalValue.innerHTML = Model.selectedValue;
             finalValue.style.color = Model.initialValueColor;
